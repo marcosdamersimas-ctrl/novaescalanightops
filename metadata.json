@@ -1,0 +1,8 @@
+{
+  "name": "sge night ops",
+  "description": "Sistema de Gestão de Escalas - Controle institucional de escalas de serviço, mapa da força, missões e aditamento",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

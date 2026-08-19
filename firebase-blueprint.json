@@ -1,0 +1,176 @@
+{
+  "entities": {
+    "Militar": {
+      "title": "Militar",
+      "description": "Cadastro de militar do efetivo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "ordem": { "type": "number" },
+        "grad": { "type": "string", "maxLength": 50 },
+        "nomeGuerra": { "type": "string", "maxLength": 100 },
+        "nomeCompleto": { "type": "string", "maxLength": 200 },
+        "matricula": { "type": "string", "maxLength": 50 },
+        "setor": { "type": "string", "maxLength": 100 },
+        "ativo": { "type": "boolean" },
+        "funcaoPadrao": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "ordem", "grad", "nomeGuerra"]
+    },
+    "EscalaAssignment": {
+      "title": "EscalaAssignment",
+      "description": "Atribuição de escala de um militar em uma data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "militarId": { "type": "string", "maxLength": 128 },
+        "escalaTipo": { "type": "string", "maxLength": 50 },
+        "data": { "type": "string", "maxLength": 10 },
+        "funcaoSigla": { "type": "string", "maxLength": 20 },
+        "funcaoId": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "militarId", "escalaTipo", "data"]
+    },
+    "Destino": {
+      "title": "Destino",
+      "description": "Registro de indisponibilidade (férias, licença, baixa) do militar",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "militarId": { "type": "string", "maxLength": 128 },
+        "militarNome": { "type": "string", "maxLength": 100 },
+        "tipo": { "type": "string", "maxLength": 50 },
+        "motivo": { "type": "string", "maxLength": 500 },
+        "dataInicio": { "type": "string", "maxLength": 10 },
+        "dataFim": { "type": "string", "maxLength": 10 },
+        "bloqueiaEscala": { "type": "boolean" }
+      },
+      "required": ["id", "militarId", "dataInicio", "dataFim"]
+    },
+    "EscalaMeta": {
+      "title": "EscalaMeta",
+      "description": "Configuração da modalidade de escala",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "nome": { "type": "string", "maxLength": 100 },
+        "sigla": { "type": "string", "maxLength": 20 },
+        "descricao": { "type": "string", "maxLength": 500 },
+        "cor": { "type": "string", "maxLength": 50 },
+        "permiteTroca": { "type": "boolean" }
+      },
+      "required": ["id", "nome", "sigla"]
+    },
+    "Aditamento": {
+      "title": "Aditamento",
+      "description": "Documento de aditamento de escala publicado",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 10 },
+        "numBoletim": { "type": "string", "maxLength": 50 },
+        "parte2Text": { "type": "string", "maxLength": 5000 },
+        "parte3Text": { "type": "string", "maxLength": 5000 },
+        "parte4Text": { "type": "string", "maxLength": 5000 },
+        "signerName": { "type": "string", "maxLength": 100 },
+        "signerRole": { "type": "string", "maxLength": 100 },
+        "isSigned": { "type": "boolean" },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "date"]
+    },
+    "Missao": {
+      "title": "Missao",
+      "description": "Tarefa ou missão operacional designada para o efetivo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "orgId": { "type": "string", "maxLength": 128 },
+        "titulo": { "type": "string", "maxLength": 200 },
+        "descricao": { "type": "string", "maxLength": 2000 },
+        "criadoPor": { "type": "string", "maxLength": 128 },
+        "criadoPorNome": { "type": "string", "maxLength": 100 },
+        "designadoPara": { "type": "string", "maxLength": 128 },
+        "designadoParaNome": { "type": "string", "maxLength": 100 },
+        "prazoData": { "type": "string", "maxLength": 10 },
+        "prazoHora": { "type": "string", "maxLength": 10 },
+        "prioridade": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "maxLength": 20 },
+        "dataCriacao": { "type": "string", "maxLength": 50 },
+        "dataConclusao": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "orgId", "titulo", "criadoPorNome", "designadoParaNome", "status", "prioridade"]
+    },
+    "AgendaItem": {
+      "title": "AgendaItem",
+      "description": "Item ou compromisso do planner e calendário da seção",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "orgId": { "type": "string", "maxLength": 128 },
+        "titulo": { "type": "string", "maxLength": 200 },
+        "descricao": { "type": "string", "maxLength": 2000 },
+        "data": { "type": "string", "maxLength": 10 },
+        "horaInicio": { "type": "string", "maxLength": 10 },
+        "horaFim": { "type": "string", "maxLength": 10 },
+        "local": { "type": "string", "maxLength": 200 },
+        "tipo": { "type": "string", "maxLength": 50 },
+        "criadoPor": { "type": "string", "maxLength": 128 },
+        "criadoPorNome": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "orgId", "titulo", "data", "horaInicio", "tipo"]
+    },
+    "PushSubscription": {
+      "title": "PushSubscription",
+      "description": "Registro de dispositivo para notificações Push PWA",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "orgId": { "type": "string", "maxLength": 128 },
+        "endpoint": { "type": "string", "maxLength": 1000 },
+        "deviceInfo": { "type": "string", "maxLength": 200 },
+        "subscribedAt": { "type": "string", "maxLength": 50 },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "userId", "orgId", "endpoint"]
+    }
+  },
+  "firestore": {
+    "/militares/{militarId}": {
+      "schema": "Militar",
+      "description": "Coleção do efetivo de militares"
+    },
+    "/assignments/{assignmentId}": {
+      "schema": "EscalaAssignment",
+      "description": "Coleção de marcadores de escala"
+    },
+    "/destinos/{destinoId}": {
+      "schema": "Destino",
+      "description": "Coleção de destinos e afastamentos"
+    },
+    "/escalas_meta/{metaId}": {
+      "schema": "EscalaMeta",
+      "description": "Coleção de metadados das modalidades de escala"
+    },
+    "/aditamentos/{aditamentoId}": {
+      "schema": "Aditamento",
+      "description": "Coleção de aditamentos salvos por data"
+    },
+    "/missoes/{missaoId}": {
+      "schema": "Missao",
+      "description": "Coleção de missões e tarefas do planner operacional"
+    },
+    "/agenda/{agendaId}": {
+      "schema": "AgendaItem",
+      "description": "Coleção de atividades do calendário e planner mensal"
+    },
+    "/push_subscriptions/{subscriptionId}": {
+      "schema": "PushSubscription",
+      "description": "Coleção de registros de inscrição Push PWA"
+    }
+  }
+}

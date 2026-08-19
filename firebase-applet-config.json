@@ -1,0 +1,9 @@
+{
+  "projectId": "escala2plus",
+  "appId": "1:96884922141:web:89a5e9a648285c438133f4",
+  "apiKey": "AIzaSyCCpYjS5DMq6LJYD4fZzZ9HGJBYSKrlnmU",
+  "authDomain": "escala2plus.firebaseapp.com",
+  "databaseURL": "https://escala2plus-default-rtdb.firebaseio.com",
+  "storageBucket": "escala2plus.firebasestorage.app",
+  "messagingSenderId": "96884922141"
+}
