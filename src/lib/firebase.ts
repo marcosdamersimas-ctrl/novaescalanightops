@@ -32,6 +32,27 @@ export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const auth = getAuth(app);
 
+// Firestore rejects `undefined` anywhere inside an object. Several UI forms use
+// optional fields with `undefined`, so sanitize every payload before persisting.
+// This prevents optimistic/local saves from appearing successful and then
+// disappearing after a reload when the Firestore write was actually rejected.
+function sanitizeForFirestore<T>(value: T): T {
+  if (value === undefined || value === null) return value;
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item !== undefined)
+      .map((item) => sanitizeForFirestore(item)) as T;
+  }
+  if (typeof value === 'object') {
+    const clean: Record<string, unknown> = {};
+    Object.entries(value as Record<string, unknown>).forEach(([key, item]) => {
+      if (item !== undefined) clean[key] = sanitizeForFirestore(item);
+    });
+    return clean as T;
+  }
+  return value;
+}
+
 export enum OperationType {
   CREATE = 'create',
   UPDATE = 'update',
@@ -216,7 +237,7 @@ export async function saveOrganizationsList(orgs: Organization[]): Promise<void>
   try {
     const batch = writeBatch(db);
     orgs.forEach((o) => {
-      batch.set(doc(db, 'organizations', o.id), o, { merge: true });
+      batch.set(doc(db, 'organizations', o.id), sanitizeForFirestore(o), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -308,7 +329,7 @@ export async function saveUsersList(users: UserAccount[]): Promise<void> {
   try {
     const batch = writeBatch(db);
     users.forEach((u) => {
-      batch.set(doc(db, 'users', u.id), u, { merge: true });
+      batch.set(doc(db, 'users', u.id), sanitizeForFirestore(u), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -369,7 +390,7 @@ export async function saveAditamentoToFirebase(data: SavedAditamentoData, orgId:
     console.warn('RTDB aditamento save error:', err);
   }
   try {
-    await setDoc(doc(db, orgId === 'rancho' ? 'aditamentos' : `aditamentos_${orgId}`, data.date), data, { merge: true });
+    await setDoc(doc(db, orgId === 'rancho' ? 'aditamentos' : `aditamentos_${orgId}`, data.date), sanitizeForFirestore(data), { merge: true });
   } catch (err) {
     console.warn('Firestore aditamento save error:', err);
   }
@@ -413,7 +434,7 @@ export async function savePernoiteToFirebase(data: PernoiteDoc, orgId: string = 
     console.warn('RTDB pernoite save error:', err);
   }
   try {
-    await setDoc(doc(db, `pernoites_${orgId}`, data.data), data, { merge: true });
+    await setDoc(doc(db, `pernoites_${orgId}`, data.data), sanitizeForFirestore(data), { merge: true });
   } catch (err) {
     console.warn('Firestore pernoite save error:', err);
   }
@@ -492,7 +513,7 @@ export async function saveMilitaresList(militares: Militar[], orgId: string = 'r
     const colName = orgId === 'rancho' ? 'militares' : `militares_${orgId}`;
     const batch = writeBatch(db);
     militares.forEach((m) => {
-      batch.set(doc(db, colName, m.id), m, { merge: true });
+      batch.set(doc(db, colName, m.id), sanitizeForFirestore(m), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -516,9 +537,19 @@ export async function saveMilitarToFirestore(militar: Militar, orgId: string = '
 
   const colName = orgId === 'rancho' ? 'militares' : `militares_${orgId}`;
   try {
-    await setDoc(doc(db, colName, militar.id), militar, { merge: true });
+    await setDoc(doc(db, colName, militar.id), sanitizeForFirestore(militar));
   } catch (err) {
     console.warn('Error saving single militar to Firestore:', err);
+  }
+
+  // Keep the realtime mirror updated as an additional persistence copy.
+  try {
+    await set(
+      ref(rtdb, `${orgId === 'rancho' ? 'militares' : `militares_${orgId}`}/${militar.id}`),
+      sanitizeForRTDB(militar)
+    );
+  } catch (err) {
+    console.warn('Error saving single militar to RTDB:', err);
   }
 }
 
@@ -595,7 +626,7 @@ export async function saveAssignmentsList(assignments: EscalaAssignment[], orgId
     const colName = orgId === 'rancho' ? 'assignments' : `assignments_${orgId}`;
     const batch = writeBatch(db);
     assignments.forEach((item) => {
-      batch.set(doc(db, colName, item.id), item, { merge: true });
+      batch.set(doc(db, colName, item.id), sanitizeForFirestore(item), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -632,7 +663,7 @@ export async function updateAssignmentsBatchInFirestore(
     const batch = writeBatch(db);
     const colName = orgId === 'rancho' ? 'assignments' : `assignments_${orgId}`;
     toAddOrUpdate.forEach((item) => {
-      batch.set(doc(db, colName, item.id), item, { merge: true });
+      batch.set(doc(db, colName, item.id), sanitizeForFirestore(item), { merge: true });
     });
     toRemoveIds.forEach((id) => {
       batch.delete(doc(db, colName, id));
@@ -695,7 +726,7 @@ export async function saveDestinosList(destinos: Destino[], orgId: string = 'ran
   try {
     const batch = writeBatch(db);
     destinos.forEach((d) => {
-      batch.set(doc(db, colName, d.id), d, { merge: true });
+      batch.set(doc(db, colName, d.id), sanitizeForFirestore(d), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -715,7 +746,7 @@ export async function saveDestinoToFirestore(destino: Destino, orgId: string = '
 
   const colName = orgId === 'rancho' ? 'destinos' : `destinos_${orgId}`;
   try {
-    await setDoc(doc(db, colName, destino.id), destino, { merge: true });
+    await setDoc(doc(db, colName, destino.id), sanitizeForFirestore(destino), { merge: true });
   } catch (err) {
     console.warn('Error saving single destino to Firestore:', err);
   }
@@ -784,7 +815,7 @@ export async function saveDestinoTiposList(tipos: string[]): Promise<void> {
   localStorage.setItem('sge_destino_tipos', JSON.stringify(tipos));
   try {
     await set(ref(rtdb, 'config/destino_tipos'), sanitizeForRTDB(tipos));
-    await setDoc(doc(db, 'config', 'destino_tipos'), { list: tipos }, { merge: true });
+    await setDoc(doc(db, 'config', 'destino_tipos'), sanitizeForFirestore({ list: tipos }), { merge: true });
   } catch (e) {
     console.warn('Save destino tipos error:', e);
   }
@@ -862,12 +893,12 @@ export async function saveEscalasMetaMap(metas: Record<string, EscalaMeta>, orgI
   }
   try {
     if (orgId === 'rancho') {
-      await setDoc(doc(db, 'config', 'escalas_meta'), { map: metas }, { merge: true });
+      await setDoc(doc(db, 'config', 'escalas_meta'), sanitizeForFirestore({ map: metas }), { merge: true });
     }
     const colName = orgId === 'rancho' ? 'escalas_meta' : `escalas_meta_${orgId}`;
     const batch = writeBatch(db);
     Object.values(metas).forEach((meta) => {
-      batch.set(doc(db, colName, meta.id), meta, { merge: true });
+      batch.set(doc(db, colName, meta.id), sanitizeForFirestore(meta), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -977,7 +1008,7 @@ export async function saveRedDaysToFirestore(
 
   // Firestore remains a backup mirror; a failure here cannot undo the RTDB write.
   try {
-    await setDoc(doc(db, 'config', firestoreDoc), redDays);
+    await setDoc(doc(db, 'config', firestoreDoc), sanitizeForFirestore(redDays));
   } catch (err) {
     console.warn('Firestore red_days save error:', err);
   }
@@ -1075,7 +1106,7 @@ export async function saveMissoesList(
   try {
     const batch = writeBatch(db);
     missoes.forEach((m) => {
-      batch.set(doc(db, 'missoes', m.id), m, { merge: true });
+      batch.set(doc(db, 'missoes', m.id), sanitizeForFirestore(m), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -1226,7 +1257,7 @@ export async function saveAgendaList(
   try {
     const batch = writeBatch(db);
     agenda.forEach((item) => {
-      batch.set(doc(db, 'agenda', item.id), item, { merge: true });
+      batch.set(doc(db, 'agenda', item.id), sanitizeForFirestore(item), { merge: true });
     });
     await batch.commit();
   } catch (err) {
@@ -1281,7 +1312,7 @@ export async function savePushSubscription(
     console.warn('RTDB save push sub error:', e);
   }
   try {
-    await setDoc(doc(db, 'push_subscriptions', sub.id), sub, { merge: true });
+    await setDoc(doc(db, 'push_subscriptions', sub.id), sanitizeForFirestore(sub), { merge: true });
   } catch (e) {
     console.warn('Firestore save push sub error:', e);
   }

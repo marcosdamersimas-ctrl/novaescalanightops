@@ -472,20 +472,20 @@ export const EscalasView: React.FC<EscalasViewProps> = ({
       {/* Main Matrix Table View */}
       <div className="bg-[#13161C] border border-[rgba(255,255,255,0.06)] rounded-[24px] shadow-2xl overflow-hidden">
         <div className="overflow-x-auto relative max-h-[640px] overflow-y-auto">
-          <table className="w-full text-left text-xs font-mono border-collapse table-fixed">
+          <table className="w-max min-w-full text-left text-xs font-mono border-collapse table-fixed">
             <thead>
               {/* Row 1: Weekday Header */}
               <tr className="bg-[#13161C] text-[#9AA3AE] uppercase border-b border-[rgba(255,255,255,0.06)] sticky top-0 z-30 shadow-md">
-                <th className="p-2 w-11 bg-[#13161C] sticky left-0 z-40 border-r border-[rgba(255,255,255,0.06)] text-[#F2B84B] font-black text-center">
+                <th className="hidden sm:table-cell p-2 w-11 bg-[#13161C] sticky left-0 z-40 border-r border-[rgba(255,255,255,0.06)] text-[#F2B84B] font-black text-center">
                   Nº
                 </th>
-                <th className="p-2 w-16 bg-[#13161C] sticky left-[44px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[#33C9EB] font-black">
+                <th className="hidden sm:table-cell p-2 w-16 bg-[#13161C] sticky left-[44px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[#33C9EB] font-black">
                   GRAD
                 </th>
-                <th className="p-2 w-52 bg-[#13161C] sticky left-[108px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[#F1F3F5] font-black">
+                <th className="p-2 w-36 sm:w-52 bg-[#13161C] sticky left-0 sm:left-[108px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[#F1F3F5] font-black">
                   MILITAR
                 </th>
-                <th className="p-2 w-44 bg-[#13161C] sticky left-[316px] z-40 border-r-2 border-[#FF7A29]/50 text-[#F2B84B] font-black text-center shadow-[4px_0_12px_rgba(0,0,0,0.7)]">
+                <th className="hidden sm:table-cell p-2 w-44 bg-[#13161C] sticky left-[316px] z-40 border-r-2 border-[#FF7A29]/50 text-[#F2B84B] font-black text-center shadow-[4px_0_12px_rgba(0,0,0,0.7)]">
                   ESCALA / SERVIÇO
                 </th>
 
@@ -507,16 +507,16 @@ export const EscalasView: React.FC<EscalasViewProps> = ({
 
               {/* Row 2: Day of Month Numbers */}
               <tr className="bg-[#13161C] text-[#9AA3AE] border-b border-[rgba(255,255,255,0.06)] sticky top-[33px] z-30 shadow-md">
-                <th className="p-1 bg-[#13161C] sticky left-0 z-40 border-r border-[rgba(255,255,255,0.06)] text-[9px] text-[#5B6470] text-center font-bold">
+                <th className="hidden sm:table-cell p-1 bg-[#13161C] sticky left-0 z-40 border-r border-[rgba(255,255,255,0.06)] text-[9px] text-[#5B6470] text-center font-bold">
                   ORD
                 </th>
-                <th className="p-1 bg-[#13161C] sticky left-[44px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[9px] text-[#5B6470] font-bold">
+                <th className="hidden sm:table-cell p-1 bg-[#13161C] sticky left-[44px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[9px] text-[#5B6470] font-bold">
                   POSTO
                 </th>
-                <th className="p-1 bg-[#13161C] sticky left-[108px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[9px] text-[#5B6470] font-bold">
+                <th className="p-1 bg-[#13161C] sticky left-0 sm:left-[108px] z-40 border-r border-[rgba(255,255,255,0.06)] text-[9px] text-[#5B6470] font-bold">
                   NOME
                 </th>
-                <th className="p-1 bg-[#13161C] sticky left-[316px] z-40 border-r-2 border-[#FF7A29]/50 text-[9px] text-[#F2B84B]/80 text-center shadow-[4px_0_12px_rgba(0,0,0,0.7)] font-bold">
+                <th className="hidden sm:table-cell p-1 bg-[#13161C] sticky left-[316px] z-40 border-r-2 border-[#FF7A29]/50 text-[9px] text-[#F2B84B]/80 text-center shadow-[4px_0_12px_rgba(0,0,0,0.7)] font-bold">
                   PADRÃO
                 </th>
 
@@ -555,17 +555,17 @@ export const EscalasView: React.FC<EscalasViewProps> = ({
                     className="hover:bg-[#1B1F27]/60 transition-colors group"
                   >
                     {/* Frozen Column 1: Order # */}
-                    <td className="p-2 font-black text-[#F2B84B] bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-0 z-20 border-r border-[rgba(255,255,255,0.06)] text-center text-xs font-tabular">
+                    <td className="hidden sm:table-cell p-2 font-black text-[#F2B84B] bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-0 z-20 border-r border-[rgba(255,255,255,0.06)] text-center text-xs font-tabular">
                       {(idx + 1).toString().padStart(2, '0')}
                     </td>
 
                     {/* Frozen Column 2: Grad */}
-                    <td className="p-2 font-black text-[#33C9EB] bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-[44px] z-20 border-r border-[rgba(255,255,255,0.06)] truncate text-xs">
+                    <td className="hidden sm:table-cell p-2 font-black text-[#33C9EB] bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-[44px] z-20 border-r border-[rgba(255,255,255,0.06)] truncate text-xs">
                       {m.grad}
                     </td>
 
                     {/* Frozen Column 3: Nome */}
-                    <td className="p-2 font-bold text-[#F1F3F5] bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-[108px] z-20 border-r border-[rgba(255,255,255,0.06)] overflow-hidden">
+                    <td className="p-2 w-36 sm:w-52 max-w-36 sm:max-w-52 font-bold text-[#F1F3F5] bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-0 sm:left-[108px] z-20 border-r border-[rgba(255,255,255,0.06)] overflow-hidden">
                       <div className="flex items-center space-x-2">
                         <div
                           draggable
@@ -582,7 +582,7 @@ export const EscalasView: React.FC<EscalasViewProps> = ({
                     </td>
 
                     {/* Frozen Column 4: Function Selector */}
-                    <td className="p-1.5 bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-[316px] z-20 border-r-2 border-[#FF7A29]/50 text-center shadow-[4px_0_12px_rgba(0,0,0,0.7)]">
+                    <td className="hidden sm:table-cell p-1.5 bg-[#13161C] group-hover:bg-[#1B1F27] sticky left-[316px] z-20 border-r-2 border-[#FF7A29]/50 text-center shadow-[4px_0_12px_rgba(0,0,0,0.7)]">
                       <div className="flex flex-col items-center justify-center space-y-0.5">
                         <select
                           value={currentMilitarSigla}
